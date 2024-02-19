@@ -1,0 +1,15 @@
+[package]
+name = "string-reader"
+description = "Readers for &str and String instead of [u8]."
+license = "MIT"
+homepage = "https://github.com/FyraLabs/string-reader"
+repository = "https://github.com/FyraLabs/string-reader"
+readme = "README.md"
+version = "0.1.0"
+edition = "2021"
+keywords = ["read", "string", "reader", "str"]
+categories = []
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
