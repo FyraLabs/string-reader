@@ -369,3 +369,13 @@ impl<'r, R: RealStrRead> StrWrite<'r> for StrReader<'r, R> {
 //         Ok(pos)
 //     }
 // }
+
+impl<R: StringRead> StringWrite for StringReader<R> {
+    fn push_string(&mut self, s: String) {
+        self.queue.push_back(s);
+    }
+
+    fn shift_string(&mut self, s: String) {
+        self.queue.push_front(s);
+    }
+}
