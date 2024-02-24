@@ -4,4 +4,4 @@ version = 3
 
 [[package]]
 name = "string-reader"
-version = "0.1.0"
+version = "0.1.1"

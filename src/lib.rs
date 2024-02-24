@@ -9,7 +9,7 @@ pub trait StrRead {
     /// Get a reference to the next `&str`.
     ///
     /// Returns `None` if it's empty.
-    fn peek_str<'a>(&'a self) -> Option<&'a str>;
+    fn peek_str(&self) -> Option<&str>;
     // fn peek_mut_str<'a>(&'a mut self) -> Option<&'a mut str>;
 
     // fn map_str(&mut self, mut f: impl FnMut(&mut str)) {
@@ -31,7 +31,7 @@ pub trait RealStrRead: StrRead {
     /// Remove the next `&str` and return it.
     ///
     /// Returns `None` if it's empty.
-    fn pop_str<'a>(&'a mut self) -> Option<&'a str>;
+    fn pop_str(&mut self) -> Option<&str>;
 }
 
 /// Represent anything that pops out `String`.
@@ -113,7 +113,7 @@ pub trait StringWrite {
 }
 
 impl StrRead for String {
-    fn peek_str<'a>(&'a self) -> Option<&'a str> {
+    fn peek_str(&self) -> Option<&str> {
         Some(self)
     }
 
@@ -184,7 +184,7 @@ impl<R: StringRead> StringReader<R> {
 }
 
 impl<R: StringRead> StrRead for StringReader<R> {
-    fn peek_str<'a>(&'a self) -> Option<&'a str> {
+    fn peek_str(&self) -> Option<&str> {
         (self.queue.front().map(|s| s.as_str()))
             .or_else(|| self.reader.as_ref().map(|r| r.peek_str())?)
     }
@@ -249,7 +249,7 @@ impl<R: StringRead> std::io::BufRead for StringReader<R> {
 }
 
 impl StrRead for str {
-    fn peek_str<'a>(&'a self) -> Option<&'a str> {
+    fn peek_str(&self) -> Option<&str> {
         Some(self)
     }
 
@@ -258,12 +258,12 @@ impl StrRead for str {
     // }
 }
 impl RealStrRead for str {
-    fn pop_str<'a>(&'a mut self) -> Option<&'a str> {
+    fn pop_str(&mut self) -> Option<&str> {
         Some(self)
     }
 }
 impl<R: StrRead + ?Sized> StrRead for Box<R> {
-    fn peek_str<'a>(&'a self) -> Option<&'a str> {
+    fn peek_str(&self) -> Option<&str> {
         (**self).peek_str()
     }
 
@@ -272,7 +272,7 @@ impl<R: StrRead + ?Sized> StrRead for Box<R> {
     // }
 }
 impl<R: RealStrRead + ?Sized> RealStrRead for Box<R> {
-    fn pop_str<'a>(&'a mut self) -> Option<&'a str> {
+    fn pop_str(&mut self) -> Option<&str> {
         (**self).pop_str()
     }
 }
@@ -318,7 +318,7 @@ impl<'a, R: RealStrRead> StrReader<'a, R> {
 }
 
 impl<'a, R: RealStrRead> StrRead for StrReader<'a, R> {
-    fn peek_str<'b>(&'b self) -> Option<&'b str> {
+    fn peek_str(&self) -> Option<&str> {
         (self.queue.front().copied()).or_else(|| self.reader.as_ref().and_then(|r| r.peek_str()))
     }
 
@@ -333,7 +333,7 @@ impl<'a, R: RealStrRead> StrRead for StrReader<'a, R> {
 }
 
 impl<'a, R: RealStrRead> RealStrRead for StrReader<'a, R> {
-    fn pop_str<'b>(&'b mut self) -> Option<&'b str> {
+    fn pop_str(&mut self) -> Option<&str> {
         self.queue
             .pop_front()
             .or_else(|| self.reader.as_mut().and_then(|r| r.pop_str()))
